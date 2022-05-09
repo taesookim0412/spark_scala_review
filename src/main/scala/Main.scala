@@ -15,13 +15,20 @@ object Main {
       .config("spark.some.config.option", "some-value")
       .getOrCreate()
 
+    // RDD
+
     // this.parallelize(sc);
 
     // this.persist(sc);
 
     //this.broadcastData(sc);
 
-    this.readJsonAsDf(spark);
+
+    // Spark sql
+    val sparkSql = new SparkSql(spark);
+    sparkSql.main();
+
+
 
     // This is the data for the value.
 
@@ -36,7 +43,7 @@ object Main {
     val distData = sc.parallelize(data)
   }
 
-  def persistAndBroadcast(sc: SparkContext): Unit ={
+  def transformAndPersist(sc: SparkContext): Unit ={
     // Read data from file or in memory -- lazily evaluate.
     val newData = sc.textFile("README.md")
     val linesLength = newData.map(s => s.length)
@@ -53,7 +60,7 @@ object Main {
     val broadcastedObjectData = broadcastedData.value;
   }
 
-  def transformAndPersist(sc: SparkContext): Unit ={
+  def transformAndBroadcast(sc: SparkContext): Unit ={
     val strDataArr = Array("A", "B", "C")
     val strData = sc.parallelize(strDataArr)
     val newStrData = this.doStuff(strData)
@@ -66,11 +73,4 @@ object Main {
     val field = this.field;
     return rdd.map(x => field + x)
   }
-
-  def readJsonAsDf(spark: SparkSession): Unit ={
-    val df = spark.read.json("people.json")
-    df.show()
-  }
-
-
 }
